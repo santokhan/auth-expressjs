@@ -189,7 +189,8 @@ router.post("/reset", async (req, res) => {
         const hashedPassword = await bcryptjs.hash(password, 10);
         const user = await User.updateOne(filter, { password: hashedPassword });
         if (!user) return res.status(400).json("User not found"); // Immediate return
-        if (redirect) return res.redirect(redirect);
+        // cors issue redirect should be on client side
+        // if (redirect) return res.redirect(redirect);
         return res.json({ message: "Password updated", user: decoded });
     } catch (error) {
         return res.status(400).json(error);
