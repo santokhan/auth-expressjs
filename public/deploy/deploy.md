@@ -1,7 +1,3 @@
-To set up an Nginx server block for an Express.js API, you'll need to configure Nginx to act as a reverse proxy that forwards requests from the subdomain `sanb.ssbanglaexpress.com` to your Express.js application. For this setup, I'll assume your Express.js application is running on port 3000, but you can adjust it as needed.
-
-Here's a step-by-step guide to creating the Nginx configuration:
-
 1. **Install Nginx** (if you haven't already):
 
    ```bash
@@ -41,7 +37,7 @@ Here's a step-by-step guide to creating the Nginx configuration:
 7. **Ensure your Express.js application is running** on port 3000 (or the port you configured). You can start your Express.js application using:
 
    ```bash
-   node your-app.js
+   node /home/app/sanb.ssbanglaexpress.com/express/
    ```
 
    or using a process manager like [PM2](pm2.md):

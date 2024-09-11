@@ -128,10 +128,10 @@ function reset() {
     }).catch(err => console.error(err))
 }
 
-// signup()
+signup()
 // signin()
 // token(credentials)
 // signout()
 // verify(credentials.email)
-forgot()
+// forgot()
 // reset()
