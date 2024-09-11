@@ -3,10 +3,10 @@ import { makeVerifyToken } from './token.js';
 
 dotenv.config();
 
-const { JWT_SECRET, BASE_URL } = process.env;
+const { ACCESS_TOKEN_SECRET, BASE_URL } = process.env;
 
-if (!JWT_SECRET || !BASE_URL) {
-    throw new Error('JWT_SECRET and BASE_URL must be defined in environment variables');
+if (!ACCESS_TOKEN_SECRET || !BASE_URL) {
+    throw new Error('ACCESS_TOKEN_SECRET and BASE_URL must be defined in environment variables');
 }
 
 /**

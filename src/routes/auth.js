@@ -8,19 +8,42 @@ import { decodeAccessToken, decodeRefreshToken, decodeVerifyToken, makeAccessTok
 import { makeVerificationLink } from "../utils/verification.js";
 import { validateToken } from "../middlewares/validatetoken.js";
 import { makePasswordResetLink } from "../utils/makeLink.js";
+import { authenticateToken } from "../middlewares/authenticateToken.js";
 
 const router = Router();
 
-router.post("/signup", (req, res) => {
+router.post("/signup", async (req, res) => {
     const { email, password } = req.body;
-    if (email && password) {
-        auth.signup(email, password).then((user) => {
-            res.json(user)
-        }).catch((err) => {
-            res.status(400).json(err)
-        })
-    } else {
-        res.status(400).json("Email and password are required");
+    if (!email) return res.status(400).json("Email is required");
+    if (!password) return res.status(400).json("Password is required");
+
+    try {
+        const user = await auth.signup(email, password);
+        if (!user) return res.status(400).json("User already exists");
+
+        const data = {
+            id: user._id,
+            email: user.email,
+            verified: user.verified,
+            v: user.__v,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt
+        }
+
+        const accessToken = makeAccessToken({ id: user._id, email: user.email });
+        if (accessToken) data.accessToken = accessToken;
+
+        const refreshToken = makeRefreshToken({ id: user._id });
+        if (refreshToken) {
+            data.refreshToken = refreshToken
+            await User.updateOne({ _id: user._id }, { refreshToken: refreshToken })
+            return res.json(data)
+        }
+    } catch (err) {
+        if (err.code == 11000) {
+            return res.status(400).json({ message: "User already exists", details: err })
+        }
+        return res.status(400).json(err)
     }
 });
 
@@ -56,30 +79,32 @@ router.post("/signin", async (req, res) => {
     }
 });
 
-router.post("/signout", async (req, res) => {
-    const { refreshToken } = req.body;
-    if (!refreshToken) res.status(400).json("Refresh token is required"); // Immediate return
+router.get("/signout", authenticateToken, async (req, res) => {
+    try {
+        const { id } = req.user;
 
-    auth.signout(refreshToken).then(() => {
-        res.json({ message: "Signout successful" });
-    }).catch((err) => {
-        res.status(400).json(err);
-    })
+        const user = await auth.signout(id)
+        if (!user) return res.status(400).json("User not found"); // Immediate return
+        return res.json({ message: "Signout successful" });
+    } catch (error) {
+        res.status(400).json(error);
+    }
 });
 
-router.post("/verify", async (req, res) => {
-    const { email } = req.body;
-    const redirect = req.query.redirect
+router.post("/verify", authenticateToken, async (req, res) => {
+    const { email, id } = req.user;
     if (!email) return res.status(400).json({ error: "Email is required" }); // Immediate return
+    const redirect = req.query.redirect
+
     try {
         const user = await auth.find(email);
         if (!user) return res.status(404).json({ error: "User not found" }); // Immediate return
 
-        if (user.verified) return res.json({ message: "User already verified" }); // Immediate return
+        if (user.verified) return res.json({ message: "User already verified", email }); // Immediate return
         const verificationLink = makeVerificationLink(email, redirect)
         if (!verificationLink) return res.status(500).json({ error: "An error occurred during verification" }); // Immediate return
         await auth.sendVerificationEmail(email, verificationLink)
-        res.json({ message: "Verification email sent" });
+        res.json({ message: "Verification email sent", email, redirect });
     } catch (error) {
         return res.status(500).json({ error: "An error occurred during verification" });
     }
@@ -112,16 +137,15 @@ router.get("/verify", async (req, res) => {
 
 router.post("/forgot", async (req, res) => {
     const { email } = req.body;
-    const redirect = req.query.redirect
+    let { redirect } = req.body;
+    redirect = redirect || req.query.redirect
     if (!email) res.status(400).json("Email is required"); // Immediate return
 
     User.findOne({ email }).then((user) => {
         if (!user) res.status(400).json("User not found"); // Immediate return
         const forgotLink = makePasswordResetLink(email, redirect)
-        console.log(forgotLink)
         if (!forgotLink) res.status(500).json("An error occurred during verification"); // Immediate return
         auth.sendForgotPasswordEmail(email, forgotLink).then(() => {
-            console.log(forgotLink)
             res.json({ forgotLink, message: "Forgot password email sent" });
         }).catch((err) => {
             res.status(500).json(err);
@@ -165,14 +189,14 @@ router.post("/reset", async (req, res) => {
         const hashedPassword = await bcryptjs.hash(password, 10);
         const user = await User.updateOne(filter, { password: hashedPassword });
         if (!user) return res.status(400).json("User not found"); // Immediate return
-        if (redirect) return res.redirect(redirect); // Immediate return
-        return res.json({ message: "Password updated", user: decoded }); 
+        if (redirect) return res.redirect(redirect);
+        return res.json({ message: "Password updated", user: decoded });
     } catch (error) {
         return res.status(400).json(error);
     }
 });
 
-router.post("/token", (req, res) => {
+router.post("/token", async (req, res) => {
     const { refreshToken } = req.body;
     if (refreshToken) {
         try {
@@ -182,14 +206,16 @@ router.post("/token", (req, res) => {
             if (id) {
                 User.findById(id).then((user) => {
                     if (!user) {
-                        res.status(400).json("Invalid refresh token");
+                        return res.status(400).json("Invalid refresh token"); // Immediate return
+                    }
+                    if (user.refreshToken !== refreshToken) {
+                        return res.status(400).json("Invalid refresh token"); // Immediate return
+                    }
+                    const accessToken = makeAccessToken({ id });
+                    if (accessToken) {
+                        res.json({ accessToken });
                     } else {
-                        const accessToken = makeAccessToken({ id });
-                        if (accessToken) {
-                            res.json({ accessToken });
-                        } else {
-                            res.status(400).json("Invalid refresh token");
-                        }
+                        res.status(400).json("Invalid refresh token");
                     }
                 })
             } else {

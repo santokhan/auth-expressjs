@@ -30,13 +30,9 @@ async function signin(email, password) {
     }
 }
 
-async function signout(refreshToken) {
+async function signout(id) {
     try {
-        const user = decodeRefreshToken(refreshToken)
-
-        const updatedUser = await User.updateOne({ _id: user.id }, { refreshToken: null })
-        if (!user) return null // User not found // immediate return
-
+        const updatedUser = await User.updateOne({ _id: id }, { refreshToken: null })
         return updatedUser
     } catch (error) {
         console.log(error)

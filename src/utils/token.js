@@ -3,10 +3,13 @@ import jwt from 'jsonwebtoken'; // Ensure you import jsonwebtoken
 
 dotenv.config();
 
-const { JWT_SECRET, REFRESH_TOKEN_SECRET } = process.env;
+const { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } = process.env;
 
-if (!JWT_SECRET || !REFRESH_TOKEN_SECRET) {
-    throw new Error('JWT_SECRET and REFRESH_TOKEN_SECRET must be defined in environment variables');
+if (!ACCESS_TOKEN_SECRET) {
+    throw new Error('ACCESS_TOKEN_SECRET must be defined in .env');
+}
+if (!REFRESH_TOKEN_SECRET) {
+    throw new Error('REFRESH_TOKEN_SECRET must be defined in .env');
 }
 
 /**
@@ -15,12 +18,7 @@ if (!JWT_SECRET || !REFRESH_TOKEN_SECRET) {
  * @returns {String|null} - The generated token or null if the secret is not defined.
  */
 function makeAccessToken(payload) {
-    if (JWT_SECRET) {
-        return jwt.sign(payload, JWT_SECRET, { expiresIn: '15m' });
-    } else {
-        console.error('JWT_SECRET is not defined');
-        return null;
-    }
+    return jwt.sign(payload, ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
 }
 
 /**
@@ -29,12 +27,7 @@ function makeAccessToken(payload) {
  * @returns {String|null} - The generated token or null if the secret is not defined.
  */
 function makeRefreshToken(payload) {
-    if (REFRESH_TOKEN_SECRET) {
-        return jwt.sign(payload, REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
-    } else {
-        console.error('REFRESH_TOKEN_SECRET is not defined');
-        return null;
-    }
+    return jwt.sign(payload, REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
 }
 
 /**
@@ -43,39 +36,19 @@ function makeRefreshToken(payload) {
  * @returns {string|null} - The generated token or null if the secret is not defined.
  */
 function makeVerifyToken(payload) {
-    if (JWT_SECRET) {
-        return jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' }); // Token expires in 1 hour
-    } else {
-        console.error('JWT_SECRET is not defined');
-        return null;
-    }
+    return jwt.sign(payload, ACCESS_TOKEN_SECRET, { expiresIn: '1h' }); // Token expires in 1 hour
 }
 
 function decodeAccessToken(token) {
-    if (JWT_SECRET) {
-        return jwt.verify(token, JWT_SECRET);
-    } else {
-        console.error('JWT_SECRET is not defined');
-        return null;
-    }
+    return jwt.verify(token, ACCESS_TOKEN_SECRET);
 }
 
 function decodeRefreshToken(token) {
-    if (REFRESH_TOKEN_SECRET) {
-        return jwt.verify(token, REFRESH_TOKEN_SECRET);
-    } else {
-        console.error('REFRESH_TOKEN_SECRET is not defined');
-        return null;
-    }
+    return jwt.verify(token, REFRESH_TOKEN_SECRET);
 }
 
 function decodeVerifyToken(token) {
-    if (JWT_SECRET) {
-        return jwt.verify(token, JWT_SECRET);
-    } else {
-        console.error('JWT_SECRET is not defined');
-        return null;
-    }
+    return jwt.verify(token, ACCESS_TOKEN_SECRET);
 }
 
 export { makeAccessToken, makeRefreshToken, decodeAccessToken, decodeRefreshToken, makeVerifyToken, decodeVerifyToken };
