@@ -6,7 +6,11 @@ import * as auth from './src/routes/auth.js'
 
 dotenv.config();
 
-const port = process.env.PORT || 3000;
+const { PORT } = process.env;
+if (!PORT) {
+    throw new Error('PORT must be defined in environment variables')
+}
+
 const app = express();
 
 connect_db();
@@ -16,6 +20,6 @@ app.use(express.json());
 
 app.use(auth.router);
 
-app.listen(port, () => {
-    console.log(`Listening on port http://localhost:${port}`);
+app.listen(PORT, () => {
+    console.log(`Listening on port http://localhost:${PORT}`);
 })

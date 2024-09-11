@@ -8,7 +8,7 @@
 2. **Create a new Nginx server block configuration file**. For this example, we'll create a file named `sanb.ssbanglaexpress.com` in the `/etc/nginx/sites-available/` directory:
 
    ```bash
-   sudo nano /etc/nginx/sites-available/sanb.ssbanglaexpress.com
+   sudo nano /etc/nginx/sites-available/sanb.ssbanglaexpress.com.conf
    ```
 
 3. **Add the following configuration** to the file. This assumes that your Express.js app is running on `localhost:3000`. Adjust the port if necessary.
@@ -17,7 +17,7 @@
 4. **Enable the server block** by creating a symbolic link to the `sites-enabled` directory:
 
    ```bash
-   sudo ln -s /etc/nginx/sites-available/sanb.ssbanglaexpress.com /etc/nginx/sites-enabled/
+   sudo ln -s /etc/nginx/sites-available/sanb.ssbanglaexpress.com.conf /etc/nginx/sites-enabled/
    ```
 
 5. **Test the Nginx configuration** to make sure there are no syntax errors:

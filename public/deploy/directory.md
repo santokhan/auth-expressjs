@@ -8,11 +8,15 @@
 
 2. **Change ownership (optional but recommended):**
 
-   Adjust the ownership so that the current user has the necessary permissions:
+Adjust the ownership so that the current user has the necessary permissions:
 
-   ```bash
-   sudo chown -R $USER:$USER /home/ubuntu/app/sanb.ssbanglaexpress.com/express
-   ```
+```bash
+sudo chown -R www-data:www-data /home/ubuntu/app/sanb.ssbanglaexpress.com/express
+
+sudo chmod -R 777 /home/ubuntu/app/sanb.ssbanglaexpress.com/express
+
+ls -l /home/ubuntu/app/sanb.ssbanglaexpress.com/express/public
+```
 
 ### 2. Set Up the Express.js Application
 

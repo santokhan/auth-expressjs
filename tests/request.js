@@ -1,4 +1,4 @@
-const API = "http://localhost:3000"
+const API = "http://localhost:6000"
 
 const credentials = {
     email: "santokhan1999@gmail.com",
