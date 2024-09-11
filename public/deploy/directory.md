@@ -2,9 +2,9 @@
 
 1. **Create the directory:**
 
-   ```bash
-   sudo mkdir -p /home/ubuntu/app/sanb.ssbanglaexpress.com/express
-   ```
+```bash
+sudo mkdir -p /home/ubuntu/app/sanb.ssbanglaexpress.com/express
+```
 
 2. **Change ownership (optional but recommended):**
 
@@ -22,45 +22,45 @@ ls -l /home/ubuntu/app/sanb.ssbanglaexpress.com/express/public
 
 1. **Navigate to the application directory:**
 
-   ```bash
-   cd /home/ubuntu/app/sanb.ssbanglaexpress.com/express
-   ```
+```bash
+cd /home/ubuntu/app/sanb.ssbanglaexpress.com/express
+```
 
 2. **Initialize a new Node.js project (if you haven't already):**
 
-   ```bash
-   npm init -y
-   ```
+```bash
+npm init -y
+```
 
-   This creates a `package.json` file with default settings.
+This creates a `package.json` file with default settings.
 
 3. **Install Express and other dependencies:**
 
-   ```bash
-   npm install express
-   ```
+```bash
+npm install express
+```
 
-   If you have other dependencies listed, install them as well. For example, if you use `nodemon` for development, you can install it with:
+If you have other dependencies listed, install them as well. For example, if you use `nodemon` for development, you can install it with:
 
-   ```bash
-   npm install --save-dev nodemon
-   ```
+```bash
+npm install --save-dev nodemon
+```
 
 4. **Create a basic Express app:**
 
-   Create a file named `app.js` (or `server.js`, depending on your preference) in the `/home/ubuntu/app/sanb.ssbanglaexpress.com/express` directory:
+Create a file named `app.js` (or `server.js`, depending on your preference) in the `/home/ubuntu/app/sanb.ssbanglaexpress.com/express` directory:
 
-   ```bash
-   nano app.js
-   ```
+```bash
+nano app.js
+```
 
 ### 3. Start Your Application
 
 1. **Run your application:**
 
-   Alternatively, use PM2 for better process management:
+Alternatively, use PM2 for better process management:
 
-   ```bash
-   npm install -g pm2
-   pm2 start app.js
-   ```
+```bash
+npm install -g pm2
+pm2 start app.js
+```

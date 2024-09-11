@@ -1,3 +1,5 @@
+ssh root@82.112.231.160
+
 sudo git pull origin main
 # santokhan
 # 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
