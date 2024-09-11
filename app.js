@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import connect_db from "./src/mongoose/settings.js";
 import * as auth from './src/routes/auth.js'
+import * as root from './src/routes/root.js'
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ connect_db();
 app.use(cors());
 app.use(express.json());
 
+app.use(root.router);
 app.use(auth.router);
 
 app.listen(PORT, () => {
