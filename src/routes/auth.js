@@ -234,7 +234,6 @@ router.post("/token", async (req, res) => {
 router.get("/validate-token", authenticateToken, async (req, res) => {
     try {
         const { user } = req;
-        console.log(user)
         if (!user) {
             return res.status(401).json({ valid: false });
         }

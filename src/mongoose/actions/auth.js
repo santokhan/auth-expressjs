@@ -64,9 +64,9 @@ async function sendVerificationEmail(to, verificationLink) {
             subject,
             html: html(verificationLink)
         });
-        console.log('Email sent successfully');
+        console.log('Verification Email sent successfully');
     } catch (error) {
-        console.error('Error sending email:', error);
+        console.error('Error verification sending email:', error);
         throw error; // Rethrow the error to be handled by the calling function
     }
 }
@@ -80,9 +80,9 @@ async function sendForgotPasswordEmail(to, forgotLink) {
             subject,
             html: html(forgotLink)
         });
-        console.log('Email sent successfully');
+        console.log('Reset Email sent successfully');
     } catch (error) {
-        console.error('Error sending email:', error);
+        console.error('Error reset sending email:', error);
         throw error; // Rethrow the error to be handled by the calling function
     }
 }
