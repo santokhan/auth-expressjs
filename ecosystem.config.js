@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     apps: [
         {
             name: 'sanb',       // Application name
@@ -7,4 +7,4 @@ module.exports = {
             exec_mode: 'cluster',          // Run in cluster mode
         }
     ]
-};
+}
