@@ -245,6 +245,20 @@ const swaggerDocument = {
           }
         }
       }
+    },
+    "/validate-token": {
+      get: {
+        security: [{ BearerAuth: [] }],
+        "x-swagger-router-controller": "home",
+        operationId: "validate-token",
+        tags: ["Auth"],
+        description: "Validate access token",
+        responses: {
+          200: {
+            description: "OK",
+          }
+        }
+      }
     }
   },
   definitions: {
@@ -339,7 +353,8 @@ const swaggerDocument = {
       name: "Authorization",
       in: "header",
       description: "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
-      scheme: "Bearer"
+      scheme: "Bearer",
+      bearerFormat: "JWT"
     }
   }
 };

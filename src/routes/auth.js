@@ -197,6 +197,7 @@ router.post("/reset", async (req, res) => {
     }
 });
 
+// take refresh token and generate new access token
 router.post("/token", async (req, res) => {
     const { refreshToken } = req.body;
     if (refreshToken) {
@@ -227,6 +228,19 @@ router.post("/token", async (req, res) => {
         }
     } else {
         res.status(400).json("Refresh token is required");
+    }
+});
+
+router.get("/validate-token", authenticateToken, async (req, res) => {
+    try {
+        const { user } = req;
+        console.log(user)
+        if (!user) {
+            return res.status(401).json({ valid: false });
+        }
+        return res.status(200).json({ valid: true, user });
+    } catch (error) {
+        return res.status(500).json({ error: "An error occurred during validation" });
     }
 });
 
