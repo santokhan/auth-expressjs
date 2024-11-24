@@ -1,12 +1,12 @@
 import { makeAccessToken } from "./token.js";
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 
 dotenv.config();
 
-const { BASE_URL } = process.env
+const { PORT } = process.env;
 
-if (!BASE_URL) {
-    throw new Error('BASE_URL must be defined in environment variables')
+if (!PORT) {
+  throw new Error("PORT must be defined in environment variables");
 }
 
 /**
@@ -16,14 +16,14 @@ if (!BASE_URL) {
  * @returns {string} The password reset link.
  */
 function makePasswordResetLink(email, redirect) {
-    const token = makeAccessToken({ email })
-    const query = { token };
-    if (redirect) {
-        query.redirect = redirect;
-    }
-    const queryString = new URLSearchParams(query).toString();
-    const passwordResetLink = `${BASE_URL}/reset?${queryString}`;
-    return passwordResetLink;
+  const token = makeAccessToken({ email });
+  const query = { token };
+  if (redirect) {
+    query.redirect = redirect;
+  }
+  const queryString = new URLSearchParams(query).toString();
+  const passwordResetLink = `http://locahost:${PORT}/reset?${queryString}`;
+  return passwordResetLink;
 }
 
-export { makePasswordResetLink }
+export { makePasswordResetLink };
