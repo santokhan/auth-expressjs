@@ -18,7 +18,7 @@ router.post("/signup", async (req, res) => {
     if (!password) return res.status(400).json("Password is required");
 
     try {
-        const user = await auth.signup(email, password);
+        const user = await auth.signup({ email, password });
         if (!user) return res.status(400).json("User already exists");
 
         const data = {
