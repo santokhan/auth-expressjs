@@ -13,31 +13,36 @@ import { authenticateToken } from "../middlewares/authenticateToken.js";
 const router = Router();
 
 router.post("/signup", async (req, res) => {
-    const { email, password } = req.body;
+    const { email, password, phone, username, name } = req.body;
     if (!email) return res.status(400).json("Email is required");
     if (!password) return res.status(400).json("Password is required");
 
     try {
-        const user = await auth.signup({ email, password });
+        const user = await auth.signup({ email, password, phone, username, name });
         if (!user) return res.status(400).json("User already exists");
 
-        const data = {
-            id: user._id,
-            email: user.email,
-            verified: user.verified,
-            v: user.__v,
+        const data_to_return = {
             createdAt: user.createdAt,
-            updatedAt: user.updatedAt
+
+            email: user.email,
+            id: user._id,
+            name: user.name,
+            phone: user.phone,
+
+            updatedAt: user.updatedAt,
+            username: user.username,
+            v: user.__v,
+            verified: user.verified,
         }
 
         const accessToken = makeAccessToken({ id: user._id, email: user.email });
-        if (accessToken) data.accessToken = accessToken;
+        if (accessToken) data_to_return.accessToken = accessToken;
 
         const refreshToken = makeRefreshToken({ id: user._id });
         if (refreshToken) {
-            data.refreshToken = refreshToken
+            data_to_return.refreshToken = refreshToken
             await User.updateOne({ _id: user._id }, { refreshToken: refreshToken })
-            return res.json(data)
+            return res.json(data_to_return)
         }
     } catch (err) {
         if (err.code == 11000) {
@@ -221,7 +226,7 @@ router.post("/token", async (req, res) => {
                     }
                 })
             } else {
-                res.status(400).json("Uesr Id not exists on refresh token");
+                res.status(400).json("User Id not exists on refresh token");
             }
         } catch (error) {
             res.status(400).json("Invalid refresh token");

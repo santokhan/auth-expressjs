@@ -267,7 +267,19 @@ const swaggerDocument = {
       properties: {
         email: {
           type: "string",
-          example: ""
+          example: "someone@gmail.com"
+        },
+        phone: {
+          type: "number",
+          example: "01300112233"
+        },
+        username: {
+          type: "string",
+          example: "my_username"
+        },
+        name: {
+          type: "string",
+          example: "John Doe"
         },
         password: {
           type: "string",

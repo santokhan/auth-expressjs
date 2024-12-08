@@ -11,8 +11,8 @@ if (!from) {
     throw new Error('EMAIL_USER must be defined in environment variables')
 }
 
-function signup({ email, password }) {
-    const user = new User({ email, password })
+function signup({ email, password, phone, username, name }) {
+    const user = new User({ email, password, phone, username, name })
     return user.save()
 }
 
